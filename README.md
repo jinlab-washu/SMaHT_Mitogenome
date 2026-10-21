@@ -9,10 +9,10 @@ Individual mtDNA variant calls were first generated per tissue per donor and per
 #### Mutect2
 Mutect2 mitochondrial mode (v1.0) was run on all available Illumina CRAM files using a WDL/Cromwell workflow adapted from the Broad GATK mitochondrial Mutect2 pipeline (https://github.com/broadinstitute/gatk/blob/master/scripts/mitochondria_m2_wdl/MitochondriaPipeline.wdl)) and the approach described in Laricchia et al. 2022[PMID: 35074858]. Briefly, chrM reads were extracted and realigned to standard and shifted mitochondrial references, variants were called with Mutect2 in mitochondrial mode, shifted calls were lifted back to standard chrM coordinates, and multiallelic records were split into biallelic records. 
 #### Mutserve
-Mutserve (v2.0.3) was run on available Illumina CRAM files with the following additional command-line specifications: `--strand-bias 1.6`, and otherwise default parameters. Tab-seperated output from mutserve was converted to a VCF. Mutserve is limited only to SNV calls.
+Mutserve (v2.0.3) was run on available Illumina CRAM files with the following additional command-line specifications: `--strand-bias 0.8`, and otherwise default parameters. Tab-seperated output from mutserve was converted to a VCF. Mutserve is limited only to SNV calls.
 ### Long-Read Based Callers
 #### Himito
-Himito (v1.1.0) was run on available PacBio and ONT CRAM files using default parameters and `quick-start` mode.
+Himito (v1.1.2) was run on available PacBio and ONT CRAM files using default parameters and `quick-start` mode.
 #### MitoScope
 MitoScope (v0.3.0) was run on available PacBio and ONT CRAM files using default parameters.
 
@@ -24,8 +24,7 @@ Using bcftools:
 - Only GT and AF from original VCFs are retained in merged VCFs as FORMAT fields. GT values are set to `1` for called variants and `.` for missing variants.
 - Mitochondrial contig names are standardized to chrM (ie replacing chrMT, MT).
 - Left-alignment/normalization of indels, atomization, and splitting of multiallelic is performed.
-- Variant calls in known blacklisted sites (chrM:3107) are filtered out.
-- For short-read callers (mutect2 and mutserve), only variants marked PASS by originating caller are retained.
+- Variant calls in known blacklisted sites (chrM:3107) and non-PASS variants are filtered out.
 
 ## Annotation
 
@@ -50,13 +49,32 @@ The final confidence tier designations are either `HighConf`,`LowConf`, or `Like
     - Variants of lowest confidence.
     - None of CrossTech, CrossTissue, or CrossCaller are applicable.
 
-### Description of remaining INFO fields
+### Pileup Incorporation
+In addition to caller support, pileup data is also used for variant support. 
+- Pileup VCFs are generated using minipileup for each donor-tissue sample using mitochondrial reads from available Illumina, PacBio, and ONT BAMs.
+- Pileup support is incorporated to upgrade existing confidence tiers of variants determined based on caller support.
+- Variant annotation fields including Tier are updated and additional fields are added to reflect incorporated pileup results (TechSupport_Pileup, TechSupport_Caller, TechSupport_Combined). 
+- Heteroplasmy levels from pileup data are reported separately alongside caller derived values individually for each technology. 
+- No new variants are added based on pileup data, only existing variants made by callers are checked for potential tier upgrades.
+- Tier status is updated from LikelyArtifact or LowConf to HighConf if additional tech support is detected using pileup data resulting in variant support from at least two different seq technologies across combined caller and pileup support.
 
+### Description of INFO fields
+
+- INFO/Tier - Confidence tier based on combined caller and pileup support.
+- INFO/OriginalTier - The original confidence tier before pileup incorporation.
 - INFO/AvailableTech - List of available technologies used for sequencing.
 - INFO/AvailableTissues - List of available tissues sequenced from donor.
-- INFO/Illumina_AF - Averaged heteroplasmy frequency across Illumina calls.
-- INFO/PacBio_AF - Averaged heteroplasmy frequency across ONT calls.
-- INFO/ONT_AF - Averaged heteroplasmy frequency across PacBio calls.
+- INFO/TissueSupport - Variant support across tissues from the same donor.
+- INFO/CallerSupport - Variant support across callers (mutect2, mutserve, mitoscope, himito).
+- INFO/TechSupport_Caller - Variant tech support based on callers.
+- INFO/TechSupport_Pileup - Variant tech support based on pileup data.
+- INFO/TechSupport_Combined - Variant support across technologies based on combined caller and pileup support.
+- INFO/Illumina_AF_caller - Averaged heteroplasmy frequency across Illumina calls.
+- INFO/PacBio_AF_caller - Averaged heteroplasmy frequency across ONT calls.
+- INFO/ONT_AF_caller - Averaged heteroplasmy frequency across PacBio calls.
+- INFO/Illumina_AF_pileup - Pileup heteroplasmy frequency from Illumina reads.
+- INFO/PacBio_AF_pileup - Pileup heteroplasmy frequency from ONT reads.
+- INFO/ONT_AF_pileup - Pileup heteroplasmy frequency from PacBio reads.
 - INFO/VariantOrigin - Germline or somatic. Germline = present in all available tissues. Somatic = present in only some tissues.
 - INFO/HeteroplasmyStatus - Homoplasmic or heteroplasmic. Threshold of 0.95 VAF used to distinguish homoplasmic and heteroplasmic variants.
 

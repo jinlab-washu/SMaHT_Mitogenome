@@ -1,0 +1,11 @@
+##INFO=<ID=Tier,Number=A,Type=String,Description="Confidence tier: HighConf,LowConf,LikelyArtifact">
+##INFO=<ID=TechSupport,Number=A,Type=String,Description="Variant support across technologies (illumina, pacbio, ont)">
+##INFO=<ID=ToolSupport,Number=A,Type=String,Description="Variant support across callers (mutect2, mutserve, mitoscope, himito)">
+##INFO=<ID=TissueSupport,Number=A,Type=String,Description="Variant support across tissues">
+##INFO=<ID=AvailableTech,Number=A,Type=String,Description="List of available technologies used for sequencing.">
+##INFO=<ID=AvailableTissues,Number=A,Type=String,Description="List of available tissues sequenced from donor.">
+##INFO=<ID=Illumina_AF,Number=A,Type=Float,Description="Averaged heteroplasmy frequency across illumina callers">
+##INFO=<ID=ONT_AF,Number=A,Type=Float,Description="Averaged heteroplasmy frequency across ont callers">
+##INFO=<ID=PacBio_AF,Number=A,Type=Float,Description="Averaged heteroplasmy frequency across pacbio callers">
+##INFO=<ID=HeteroplasmyStatus,Number=A,Type=String,Description="Heteroplasmy status (homoplasmic, heteroplasmic)">
+##INFO=<ID=VariantOrigin,Number=A,Type=String,Description="Variant origin (germline, somatic)">

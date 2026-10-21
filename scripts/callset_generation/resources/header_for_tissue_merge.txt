@@ -1,0 +1,5 @@
+##fileformat=VCFv4.2
+##contig=<ID=chrM,length=16569>
+##FORMAT=<ID=GT,Number=A,Type=String,Description="Genotype">
+##FORMAT=<ID=AF,Number=A,Type=Float,Description="Heteroplasmic allele frequency">
+##INFO=<ID=AC,Number=A,Type=Integer,Description="Allele count in genotypes">

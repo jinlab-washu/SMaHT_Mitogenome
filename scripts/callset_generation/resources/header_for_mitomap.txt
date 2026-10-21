@@ -1,0 +1,4 @@
+##INFO=<ID=MITOMAP_Disease,Number=A,Type=String,Description="MITOMAP associated diseases.">
+##INFO=<ID=MITOMAP_Disease_Status,Number=A,Type=String,Description="MITOMAP disease status.">
+##INFO=<ID=MITOMAP_GenBank_AC,Number=A,Type=Float,Description="MITOMAP GenBank sample count.">
+##INFO=<ID=MITOMAP_GenBank_AF,Number=A,Type=Float,Description="MITOMAP GenBank population allele frequency.">

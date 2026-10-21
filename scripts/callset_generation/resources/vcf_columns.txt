@@ -1,0 +1,15 @@
+CHROM 
+POS
+REF
+ALT
+INFO/Tier
+INFO/TechSupport
+INFO/ToolSupport
+INFO/TissueSupport
+INFO/AvailableTech 
+INFO/AvailableTissues
+INFO/Illumina_AF
+INFO/ONT_AF
+INFO/PacBio_AF
+INFO/HeteroplasmyStatus
+INFO/VariantOrigin
